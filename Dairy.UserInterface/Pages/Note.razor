@@ -1,0 +1,7 @@
+@page "/Note/{NoteId:long}"
+<h3>Note</h3>
+
+<RadzenCard>
+    <h4 class="mb-4">TextArea</h4>
+    <RadzenTextArea Change=@(async (string args) => await OnChange(args, "TextArea")) Class="w-100" />
+</RadzenCard>

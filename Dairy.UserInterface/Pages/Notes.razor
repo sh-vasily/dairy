@@ -1,0 +1,40 @@
+﻿@page "/notes"
+@inject HttpClient Http
+
+<PageTitle>Записи</PageTitle>
+
+<h1>Записи</h1>
+
+@if (notes == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Текст</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var note in notes)
+        {
+            <tr>
+                <td>@note.Date</td>
+                <td>@note.Text</td>
+                <button @onclick="() => OnClick(note.Id)">Редактировать запись</button>
+                <button @onclick="() => Delete(note.Id)">Удалить запись</button>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+<RadzenCard>
+    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Запись</RadzenText>
+    <RadzenTextArea Change=@(args => AddNote(args, "TextArea")) Class="w-100" />
+</RadzenCard>
+<button>Добавить запись</button>
