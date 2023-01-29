@@ -6,53 +6,96 @@ namespace Dairy.Api;
 
 public interface INoteService
 {
-    Task Add(CreateNoteViewModel noteViewModel, string dbPath);
-    Task Update(NoteViewModel noteViewModel);
-    Task Delete(int noteId, string dbPath);
-    Task<NoteViewModel> Find(int id, string dbPath);
-    Task<IEnumerable<NoteViewModel>> FindAll(string dbPath);
+    Task Add(CreateNoteViewModel noteViewModel, CancellationToken cancellationToken);
+    Task Update(NoteViewModel noteViewModel, CancellationToken cancellationToken);
+    Task Delete(int noteId, CancellationToken cancellationToken);
+    Task<NoteViewModel> Find(int id, CancellationToken cancellationToken);
+    Task<IEnumerable<NoteViewModel>> FindAll(CancellationToken cancellationToken);
 }
 
 public class NoteService : INoteService
 {
-    public static SQLiteConnection GetSqLiteConnection(string dbPath) =>
-        new SQLiteConnection($"Data Source={dbPath};Version=3;New=True;Compress=True;")
-            .Also(connection => connection.Open());
+    private const string UpdateQuery = @"
+            update note
+            set text = @Text
+            where id = @Id;
+            ";
 
-    
-    public Task Update(NoteViewModel noteViewModel)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task Add(CreateNoteViewModel noteViewModel, string dbPath)
-    {
-        await GetSqLiteConnection(dbPath).ExecuteAsync(@"
+    private const string InsertQuery = @"
             insert into note (text, date)
             values(@Text, @Date);
-        ", new
-        {
-            noteViewModel.Text,
-            Date = DateTime.Now,
-        });    
-    }
-    
-    public async Task Delete(int noteId, string dbPath) 
-        => await GetSqLiteConnection(dbPath).QueryAsync(@"
+            ";
+
+    private const string DeleteQuery = @"
             delete from note
             where note.id = @noteId;
-        ", new { noteId });
+            ";
 
-    public async Task<NoteViewModel> Find(int id, string dbPath) 
-        => await GetSqLiteConnection(dbPath).QueryFirstAsync<NoteViewModel>(@"
+    private const string SelectAllQuery = @"
+            select note.id, note.date, note.text
+            from note;
+            ";
+
+    private const string SelectByIdQuery = @"
             select note.id, note.text
             from note
             where note.id = @id;
-        ", id);
+            ";
+    
+    private readonly string dbPath;
 
-    public async Task<IEnumerable<NoteViewModel>> FindAll(string dbPath) 
-        => await GetSqLiteConnection(dbPath).QueryAsync<NoteViewModel>(@"
-            select note.id, note.date, note.text
-            from note;
-        ");
+    private SQLiteConnection SqLiteConnection => 
+        new SQLiteConnection($"Data Source={dbPath};Version=3;New=True;Compress=True;")
+            .Also(connection => connection.Open());
+
+    public NoteService(string dbPath)
+    {
+        this.dbPath = dbPath;
+    }
+
+    public async Task Update(NoteViewModel noteViewModel, CancellationToken cancellationToken)
+    {
+        var queryParams = new
+        {
+            noteViewModel.Id,
+            noteViewModel.Text
+        };
+
+        await SqLiteConnection
+            .ExecuteAsync(new CommandDefinition(UpdateQuery, queryParams, cancellationToken: cancellationToken));
+    }
+
+    public async Task Add(CreateNoteViewModel noteViewModel, CancellationToken cancellationToken)
+    {
+        var queryParams = new
+        {
+            noteViewModel.Text,
+            Date = DateTime.Now,
+        }; 
+        
+        await SqLiteConnection
+            .ExecuteAsync(new CommandDefinition(InsertQuery, queryParams, cancellationToken: cancellationToken));    
+    }
+
+    public async Task Delete(int noteId, CancellationToken cancellationToken)
+    {
+        var queryParams = new
+        {
+            noteId
+        };
+
+        await SqLiteConnection
+            .ExecuteAsync(new CommandDefinition(DeleteQuery, queryParams, cancellationToken: cancellationToken));
+    }
+
+    public async Task<NoteViewModel> Find(int id, CancellationToken cancellationToken)
+    {
+        var queryParams = new { id };
+        return await SqLiteConnection
+            .QueryFirstAsync<NoteViewModel>(new CommandDefinition(SelectByIdQuery, queryParams, cancellationToken: cancellationToken));
+    }
+
+    public async Task<IEnumerable<NoteViewModel>> FindAll(CancellationToken cancellationToken)
+        => await SqLiteConnection
+            .QueryAsync<NoteViewModel>(new CommandDefinition(SelectAllQuery, cancellationToken: cancellationToken));
 }

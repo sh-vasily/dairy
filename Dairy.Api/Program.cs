@@ -51,11 +51,16 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.MapGet("note/all", async (INoteService noteService) => await noteService.FindAll(dbPath));
-app.MapGet("note/{id:int}", async (INoteService noteService, int id) => await noteService.Find(id, dbPath));
-app.MapPost("note", async (INoteService noteService, CreateNoteViewModel note) => await noteService.Add(note, dbPath));
-app.MapPut("note", async (INoteService noteService, NoteViewModel note) => await noteService.Update(note));
-app.MapDelete("note/{noteId:int}", async (INoteService noteService, int noteId) => await noteService.Delete(noteId, dbPath));
+app.MapGet("note/all", async (INoteService noteService, CancellationToken cancellationToken) 
+    => await noteService.FindAll(cancellationToken));
+app.MapGet("note/{id:int}", async (INoteService noteService, int id, CancellationToken cancellationToken) 
+    => await noteService.Find(id, cancellationToken));
+app.MapPost("note", async (INoteService noteService, CreateNoteViewModel note, CancellationToken cancellationToken)
+    => await noteService.Add(note, cancellationToken));
+app.MapPut("note", async (INoteService noteService, NoteViewModel note, CancellationToken cancellationToken) 
+    => await noteService.Update(note, cancellationToken));
+app.MapDelete("note/{noteId:int}", async (INoteService noteService, int noteId, CancellationToken cancellationToken) 
+    => await noteService.Delete(noteId, cancellationToken));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
