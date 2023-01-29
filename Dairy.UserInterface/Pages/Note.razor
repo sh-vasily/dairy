@@ -3,5 +3,9 @@
 
 <RadzenCard>
     <h4 class="mb-4">TextArea</h4>
-    <RadzenTextArea Change=@(async (string args) => await OnChange(args, "TextArea")) Class="w-100" />
+    <RadzenTextArea
+        Value="@Text"
+        bind-Value="@Text"
+        Change=@(async (string args) => await OnChange(args, "TextArea")) 
+        Class="w-100" />
 </RadzenCard>
