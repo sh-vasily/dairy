@@ -20,7 +20,7 @@ public class NoteService : INoteService
             set text = @Text
             where id = @Id;
             ";
-
+    
     private const string InsertQuery = @"
             insert into note (text, date)
             values(@Text, @Date);
@@ -53,6 +53,7 @@ public class NoteService : INoteService
         this.dbPath = dbPath;
     }
 
+    //todo: try to use merge here
     public async Task Update(NoteViewModel noteViewModel, CancellationToken cancellationToken)
     {
         var queryParams = new
