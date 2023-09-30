@@ -33,7 +33,8 @@ public class NoteService : INoteService
 
     private const string SelectAllQuery = @"
             select note.id, note.date, note.text
-            from note;
+            from note
+            order by note.date;
             ";
 
     private const string SelectByIdQuery = @"
@@ -42,15 +43,15 @@ public class NoteService : INoteService
             where note.id = @id;
             ";
     
-    private readonly string dbPath;
+    private readonly DatabaseConfig databaseConfig;
 
     private SQLiteConnection SqLiteConnection => 
-        new SQLiteConnection($"Data Source={dbPath};Version=3;New=True;Compress=True;")
+        new SQLiteConnection($"Data Source={databaseConfig.Path};Version=3;New=True;Compress=True;")
             .Also(connection => connection.Open());
 
-    public NoteService(string dbPath)
+    public NoteService(DatabaseConfig databaseConfig)
     {
-        this.dbPath = dbPath;
+        this.databaseConfig = databaseConfig;
     }
 
     //todo: try to use merge here
