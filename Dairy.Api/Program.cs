@@ -35,6 +35,7 @@ if (pragmaResult is IDictionary<string, object> pairs
 }
 
 // Add services to the container.
+builder.Services.AddSingleton(new DatabaseConfig(dbPath));
 builder.Services.AddSingleton<INoteService, NoteService>();
 builder.Services.AddCors(options =>
 {
