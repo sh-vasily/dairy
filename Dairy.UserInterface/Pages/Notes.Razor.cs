@@ -11,18 +11,20 @@ public partial class Notes
 
     private NoteViewModel[]? notes;
 
+    private CreateNoteViewModel note = new ();
+
     protected override async Task OnInitializedAsync() => await RefreshNotes();
 
     private void OnClick(long noteId)
     {
         NavigationManager.NavigateTo($"/Note/{noteId}");
     }
-
-    private async Task AddNote(string args, string textarea)
+    
+    async Task Submit()
     {
-        var noteViewModel = new CreateNoteViewModel(args);
-        await _noteService.Add(noteViewModel);
+        await _noteService.Add(note);
         await RefreshNotes();
+        note.Text = string.Empty;
     }
 
     private async Task Delete(long noteId)

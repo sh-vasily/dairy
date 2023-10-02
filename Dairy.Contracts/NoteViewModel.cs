@@ -7,4 +7,8 @@ public record NoteViewModel(long Id, DateTime Date, string Text)
     /// </summary>
     private NoteViewModel(): this(default, default, string.Empty) { }
 }
-public record CreateNoteViewModel(string Text);
+
+public record CreateNoteViewModel(string Text = "")
+{
+    public string Text { get; set; } = Text;
+}

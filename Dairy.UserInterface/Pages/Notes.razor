@@ -2,6 +2,13 @@
 @page "/notes"
 @inject HttpClient Http
 
+<style>
+.input-field2 {
+    width: 100%;
+    height: 100px;
+}
+</style>
+
 <PageTitle>Записи</PageTitle>
 
 <h1>Записи</h1>
@@ -34,8 +41,10 @@ else
         </tbody>
     </table>
 }
-<RadzenCard>
-    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Запись</RadzenText>
-    <RadzenTextArea Change=@(args => AddNote(args, "TextArea")) Class="w-100" />
-</RadzenCard>
-<button>Добавить запись</button>
+<EditForm Model="@note" OnSubmit="@(async () => await Submit())" >
+    <p>
+        Запись:<br />
+        <InputText id="name" @bind-Value="note.Text" class="input-field2"/>
+    </p>
+    <button type="submit">Добавить запись</button>
+</EditForm>
