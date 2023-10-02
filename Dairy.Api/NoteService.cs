@@ -31,9 +31,10 @@ public class NoteService : INoteService
             where note.id = @noteId;
             ";
 
-    private const string SelectAllQuery = @"
+    private const string SelectTodayNotesQuery = @"
             select note.id, note.date, note.text
             from note
+            where date(note.date) = date('now')
             order by note.date;
             ";
 
@@ -99,5 +100,5 @@ public class NoteService : INoteService
 
     public async Task<IEnumerable<NoteViewModel>> FindAll(CancellationToken cancellationToken)
         => await SqLiteConnection
-            .QueryAsync<NoteViewModel>(new CommandDefinition(SelectAllQuery, cancellationToken: cancellationToken));
+            .QueryAsync<NoteViewModel>(new CommandDefinition(SelectTodayNotesQuery, cancellationToken: cancellationToken));
 }
