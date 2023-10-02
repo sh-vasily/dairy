@@ -7,7 +7,7 @@ namespace Dairy;
 
 public class NoteService : INoteService
 {
-    private const string ApiUrl = "http://localhost:5555";
+    private const string ApiUrl = "http://localhost:8081";
     private readonly HttpClient _httpClient;
 
     public NoteService(HttpClient httpClient)
@@ -32,9 +32,10 @@ public class NoteService : INoteService
     public async Task Delete(int noteId) 
         => await _httpClient.DeleteAsync($"{ApiUrl}/Note/{noteId}");
 
-    public Task<NoteViewModel> Find(int id)
+    public async Task<NoteViewModel> Find(int id)
     {
-        throw new NotImplementedException();
+        return await _httpClient.GetFromJsonAsync<NoteViewModel>(
+            $"{ApiUrl}/Note/{id}");
     }
 
     public Task<List<NoteViewModel>> FindAll() 

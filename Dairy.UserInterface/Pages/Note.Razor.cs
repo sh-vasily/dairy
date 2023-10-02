@@ -13,14 +13,12 @@ public partial class Note
     
     public string Text { get; set; }
 
-    [Inject] 
-    private HttpClient HttpClient { get; set; }
+    [Inject] INoteService NoteService { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        var noteViewModel = await HttpClient.GetFromJsonAsync<NoteViewModel>(
-            $"http://localhost:5555/Note/{NoteId}");
+        var noteViewModel = await NoteService.Find((int)NoteId.Value);
 
         Text = noteViewModel.Text;
     }
@@ -29,8 +27,6 @@ public partial class Note
     {
         Text = noteContent;
         var noteViewModel = new NoteViewModel(NoteId.Value, DateTime.UtcNow, noteContent);
-        var payload = JsonConvert.SerializeObject(noteViewModel);
-        var httpContent = new StringContent(payload, Encoding.UTF8, "application/json");
-        await HttpClient.PutAsync("http://localhost:5555/Note", httpContent);
+        await NoteService.Update(noteViewModel);
     }
 }
