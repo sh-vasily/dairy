@@ -8,10 +8,3 @@ services:
       - 8081:80
     volumes:
       - c:\ProgramData\Dairy\:/var/data
-  ui:
-    build:
-      context: .
-      dockerfile: Dairy.UserInterface/Dockerfile
-    restart: always
-    ports:
-      - 8080:80
