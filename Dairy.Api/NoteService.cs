@@ -10,7 +10,7 @@ public interface INoteService
     Task Update(NoteViewModel noteViewModel, CancellationToken cancellationToken);
     Task Delete(int noteId, CancellationToken cancellationToken);
     Task<NoteViewModel> Find(int id, CancellationToken cancellationToken);
-    Task<IEnumerable<NoteViewModel>> FindAll(CancellationToken cancellationToken);
+    Task<IEnumerable<NoteViewModel>> FindAll(DateOnly? dateTime, CancellationToken cancellationToken);
 }
 
 public class NoteService : INoteService
@@ -31,10 +31,16 @@ public class NoteService : INoteService
             where note.id = @noteId;
             ";
 
-    private const string SelectTodayNotesQuery = @"
+    private const string SelectAllNotesQuery = @"
             select note.id, note.date, note.text
             from note
-            where date(note.date) = date('now')
+            order by note.date;
+            ";
+    
+    private const string SelectByDateNotesQuery = @"
+            select note.id, note.date, note.text
+            from note
+            where date(note.date) = date(@date)
             order by note.date;
             ";
 
@@ -98,7 +104,17 @@ public class NoteService : INoteService
             .QueryFirstAsync<NoteViewModel>(new CommandDefinition(SelectByIdQuery, queryParams, cancellationToken: cancellationToken));
     }
 
-    public async Task<IEnumerable<NoteViewModel>> FindAll(CancellationToken cancellationToken)
-        => await SqLiteConnection
-            .QueryAsync<NoteViewModel>(new CommandDefinition(SelectTodayNotesQuery, cancellationToken: cancellationToken));
+    public async Task<IEnumerable<NoteViewModel>> FindAll(DateOnly? dateTime, CancellationToken cancellationToken)
+    {
+        if (dateTime is null)
+        {
+            return await SqLiteConnection
+                .QueryAsync<NoteViewModel>(new CommandDefinition(SelectAllNotesQuery, cancellationToken: cancellationToken)); 
+        }
+        
+        var queryParams = new { date = dateTime.Value.ToString("yyyy-MM-dd") };
+        
+        return await SqLiteConnection
+            .QueryAsync<NoteViewModel>(new CommandDefinition(SelectByDateNotesQuery, queryParams, cancellationToken: cancellationToken));
+    } 
 }

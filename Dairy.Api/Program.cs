@@ -2,6 +2,7 @@ using System.Data.SQLite;
 using Dairy.Api;
 using Dairy.ViewModels;
 using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using INoteService = Dairy.Api.INoteService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,8 +53,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.MapGet("note/all", async (INoteService noteService, CancellationToken cancellationToken) 
-    => await noteService.FindAll(cancellationToken));
+app.MapGet("note/all", async ([FromQuery] DateOnly? dateTime,  INoteService noteService, CancellationToken cancellationToken) 
+    => await noteService.FindAll(dateTime, cancellationToken));
 app.MapGet("note/{id:int}", async (INoteService noteService, int id, CancellationToken cancellationToken) 
     => await noteService.Find(id, cancellationToken));
 app.MapPost("note", async (INoteService noteService, CreateNoteViewModel note, CancellationToken cancellationToken)

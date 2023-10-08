@@ -1,7 +1,13 @@
 using Dairy.ViewModels;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Dairy.Pages;
+
+public class NoteDate
+{
+    public DateTime Value { get; set; } = DateTime.Today;
+}
 
 public partial class Notes
 {
@@ -12,9 +18,14 @@ public partial class Notes
     private NoteViewModel[]? notes;
 
     private CreateNoteViewModel note = new ();
+    NoteDate noteDate { get; set; } = new ();
 
-    protected override async Task OnInitializedAsync() => await RefreshNotes();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshNotes();
+    }
 
+    
     private void OnClick(long noteId)
     {
         NavigationManager.NavigateTo($"/Note/{noteId}");
@@ -33,5 +44,5 @@ public partial class Notes
         await RefreshNotes();
     }
 
-    private async Task RefreshNotes() => notes = (await _noteService.FindAll()).ToArray();
+    private async Task RefreshNotes() => notes = (await _noteService.FindByDate(noteDate.Value)).ToArray();
 }

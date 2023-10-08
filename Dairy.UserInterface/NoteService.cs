@@ -39,7 +39,10 @@ public class NoteService : INoteService
     }
 
     public Task<List<NoteViewModel>> FindAll() 
-        => _httpClient.GetFromJsonAsync<List<NoteViewModel>>($"{ApiUrl}/note/all");
+        => _httpClient.GetFromJsonAsync<List<NoteViewModel>>($"{ApiUrl}/note/all?dateTime");
+    
+    public Task<List<NoteViewModel>> FindByDate(DateTime dateTime) 
+        => _httpClient.GetFromJsonAsync<List<NoteViewModel>>($"{ApiUrl}/note/all?dateTime={dateTime.ToString("yyyy-MM-dd")}");
 }
 
 public class InMemoryNoteService : INoteService
@@ -80,5 +83,10 @@ public class InMemoryNoteService : INoteService
     public Task<List<NoteViewModel>> FindAll()
     {
         return Task.FromResult(_notes.ToList());
+    }
+
+    public Task<List<NoteViewModel>> FindByDate(DateTime dateTime)
+    {
+        throw new NotImplementedException();
     }
 }
