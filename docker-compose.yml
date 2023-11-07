@@ -4,7 +4,9 @@ services:
       context: .
       dockerfile: Dairy.Api/Dockerfile
     restart: always
-    ports:
-      - 8081:80
     volumes:
       - c:\ProgramData\Dairy\:/var/data
+  ui:
+    build: Dairy.UserInterface
+    ports:
+      - 80:80
