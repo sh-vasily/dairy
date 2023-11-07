@@ -4,7 +4,7 @@ using Dapper;
 
 namespace Dairy.Api;
 
-public interface INoteService
+public interface INoteRepository
 {
     Task Add(CreateNoteViewModel noteViewModel, CancellationToken cancellationToken);
     Task Update(NoteViewModel noteViewModel, CancellationToken cancellationToken);
@@ -13,7 +13,7 @@ public interface INoteService
     Task<IEnumerable<NoteViewModel>> FindAll(DateOnly? dateTime, CancellationToken cancellationToken);
 }
 
-public class NoteService : INoteService
+public class NoteRepository : INoteRepository
 {
     private const string UpdateQuery = @"
             update note
@@ -56,7 +56,7 @@ public class NoteService : INoteService
         new SQLiteConnection($"Data Source={databaseConfig.Path};Version=3;New=True;Compress=True;")
             .Also(connection => connection.Open());
 
-    public NoteService(DatabaseConfig databaseConfig)
+    public NoteRepository(DatabaseConfig databaseConfig)
     {
         this.databaseConfig = databaseConfig;
     }

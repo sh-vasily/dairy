@@ -1,43 +1,13 @@
-using System.Data.SQLite;
 using Dairy.Api;
 using Dairy.ViewModels;
-using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using INoteService = Dairy.Api.INoteService;
 
 var builder = WebApplication.CreateBuilder(args);
-
 var dbPath = builder.Configuration.GetSection("DbPath").Value ?? "C:\\Users\\User\\Documents\\database.db";
-Console.WriteLine($"Database Path = {dbPath}");
-var dbConnection = new SQLiteConnection(@$"Data Source={dbPath};Version=3;New=True;Compress=True;");
-dbConnection.Open();
-await dbConnection.ExecuteAsync(@"
-    create table if not exists note(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT);
-        ");
-
-var pragmaResult = await dbConnection.QueryFirstAsync(@"
-    select user_version 
-    from pragma_user_version();
-");
-
-if (pragmaResult is IDictionary<string, object> pairs
-    && pairs.TryGetValue("user_version", out var userVersion)
-    && (long)userVersion < 1)
-{
-    Console.WriteLine("Migrate date column starting...");
-    await dbConnection.ExecuteAsync(@"
-        alter table note add column date datetime;
-        update note
-        set date = datetime('now')
-        where date is null;
-        pragma user_version = 1;
-    ");
-    Console.WriteLine("Migrate date column finished...");
-}
 
 // Add services to the container.
 builder.Services.AddSingleton(new DatabaseConfig(dbPath));
-builder.Services.AddSingleton<INoteService, NoteService>();
+builder.Services.AddSingleton<INoteRepository, NoteRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "AllowCorsPolicy", x => x
@@ -53,16 +23,16 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.MapGet("note/all", async ([FromQuery] DateOnly? dateTime,  INoteService noteService, CancellationToken cancellationToken) 
-    => await noteService.FindAll(dateTime, cancellationToken));
-app.MapGet("note/{id:int}", async (INoteService noteService, int id, CancellationToken cancellationToken) 
-    => await noteService.Find(id, cancellationToken));
-app.MapPost("note", async (INoteService noteService, CreateNoteViewModel note, CancellationToken cancellationToken)
-    => await noteService.Add(note, cancellationToken));
-app.MapPut("note", async (INoteService noteService, NoteViewModel note, CancellationToken cancellationToken) 
-    => await noteService.Update(note, cancellationToken));
-app.MapDelete("note/{noteId:int}", async (INoteService noteService, int noteId, CancellationToken cancellationToken) 
-    => await noteService.Delete(noteId, cancellationToken));
+app.MapGet("note/all", async ([FromQuery] DateOnly? dateTime, INoteRepository noteRepository, CancellationToken cancellationToken) 
+    => await noteRepository.FindAll(dateTime, cancellationToken));
+app.MapGet("note/{id:int}", async (INoteRepository noteRepository, int id, CancellationToken cancellationToken) 
+    => await noteRepository.Find(id, cancellationToken));
+app.MapPost("note", async (INoteRepository noteRepository, CreateNoteViewModel note, CancellationToken cancellationToken)
+    => await noteRepository.Add(note, cancellationToken));
+app.MapPut("note", async (INoteRepository noteRepository, NoteViewModel note, CancellationToken cancellationToken) 
+    => await noteRepository.Update(note, cancellationToken));
+app.MapDelete("note/{noteId:int}", async (INoteRepository noteRepository, int noteId, CancellationToken cancellationToken) 
+    => await noteRepository.Delete(noteId, cancellationToken));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -72,12 +42,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowCorsPolicy");
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
-
 app.MapControllers();
 
 app.Run();
