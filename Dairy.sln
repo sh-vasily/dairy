@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dairy.Api", "Dairy.Api\Dair
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dairy.Contracts", "Dairy.Contracts\Dairy.Contracts.csproj", "{B82D16A9-E7A6-481D-A190-7F586458ADDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dairy.DevProxy", "Dairy.DevProxy\Dairy.DevProxy.csproj", "{7F59ED43-2E0A-46B3-98BD-B49207039FAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,14 @@ Global
 		{B82D16A9-E7A6-481D-A190-7F586458ADDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B82D16A9-E7A6-481D-A190-7F586458ADDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B82D16A9-E7A6-481D-A190-7F586458ADDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01A71302-5C0F-4C15-8618-8E296B9CC518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01A71302-5C0F-4C15-8618-8E296B9CC518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01A71302-5C0F-4C15-8618-8E296B9CC518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01A71302-5C0F-4C15-8618-8E296B9CC518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F59ED43-2E0A-46B3-98BD-B49207039FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F59ED43-2E0A-46B3-98BD-B49207039FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F59ED43-2E0A-46B3-98BD-B49207039FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F59ED43-2E0A-46B3-98BD-B49207039FAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@ namespace Dairy;
 
 public class NoteService : INoteService
 {
-    private const string ApiUrl = "http://localhost:8081";
+    private const string ApiUrl = "http://localhost:8080";
     private readonly HttpClient _httpClient;
 
     public NoteService(HttpClient httpClient)
@@ -19,23 +19,23 @@ public class NoteService : INoteService
     {
         var payload = JsonConvert.SerializeObject(noteViewModel);
         using var httpContent = new StringContent(payload, Encoding.UTF8, "application/json");
-        await _httpClient.PostAsync($"{ApiUrl}/Note", httpContent);
+        await _httpClient.PostAsync($"{ApiUrl}/note", httpContent);
     }
 
     public async Task Update(NoteViewModel noteViewModel)
     {
         var payload = JsonConvert.SerializeObject(noteViewModel);
         var httpContent = new StringContent(payload, Encoding.UTF8, "application/json");
-        await _httpClient.PutAsync($"{ApiUrl}/Note", httpContent);
+        await _httpClient.PutAsync($"{ApiUrl}/note", httpContent);
     }
 
     public async Task Delete(int noteId) 
-        => await _httpClient.DeleteAsync($"{ApiUrl}/Note/{noteId}");
+        => await _httpClient.DeleteAsync($"{ApiUrl}/note/{noteId}");
 
     public async Task<NoteViewModel> Find(int id)
     {
         return await _httpClient.GetFromJsonAsync<NoteViewModel>(
-            $"{ApiUrl}/Note/{id}");
+            $"{ApiUrl}/note/{id}");
     }
 
     public Task<List<NoteViewModel>> FindAll() 

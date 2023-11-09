@@ -8,13 +8,6 @@ var dbPath = builder.Configuration.GetSection("DbPath").Value ?? "C:\\Users\\Use
 // Add services to the container.
 builder.Services.AddSingleton(new DatabaseConfig(dbPath));
 builder.Services.AddSingleton<INoteRepository, NoteRepository>();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "AllowCorsPolicy", x => x
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());
-});
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -41,7 +34,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowCorsPolicy");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
