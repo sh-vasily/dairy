@@ -9,5 +9,7 @@ builder.Services.AddSingleton<INoteRepository, NoteRepository>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+app.UseCors(x=>x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 app.MapNoteEndpoints();
 app.Run();

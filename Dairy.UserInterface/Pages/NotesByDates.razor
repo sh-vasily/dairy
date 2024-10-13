@@ -1,5 +1,5 @@
-﻿@page "/"
-@page "/notes/all"
+@page "/notes/by-date"
+
 
 <style>
 .input-field2 {
@@ -9,6 +9,10 @@
 </style>
 
 <PageTitle>Записи</PageTitle>
+<EditForm Model="@noteDate"  OnSubmit="@(async () => await RefreshNotes())">
+    <InputDate id="date" @bind-Value="noteDate.Value"/>
+    <button type="submit">Поиск</button>
+</EditForm>
 <h1>Записи</h1>
 
 @if (notes == null)

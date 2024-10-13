@@ -17,7 +17,7 @@ public class NoteRepository(DatabaseConfig databaseConfig) : INoteRepository
 {
     private const string UpdateQuery = @"
             update note
-            set text = @Text
+            set text = @Text, updated_at = @UdatedAt
             where id = @Id;
             ";
     
@@ -60,7 +60,8 @@ public class NoteRepository(DatabaseConfig databaseConfig) : INoteRepository
         var queryParams = new
         {
             noteViewModel.Id,
-            noteViewModel.Text
+            noteViewModel.Text,
+            UpdatedAt = DateTime.Now
         };
 
         await SqLiteConnection
@@ -99,8 +100,6 @@ public class NoteRepository(DatabaseConfig databaseConfig) : INoteRepository
 
     public async Task<IEnumerable<NoteViewModel>> FindAll(DateOnly? dateTime, CancellationToken cancellationToken)
     {
-        Console.WriteLine(databaseConfig.Path);
-        
         if (dateTime is null)
         {
             return await SqLiteConnection

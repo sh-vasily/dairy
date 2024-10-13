@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dairy.Contracts", "Dairy.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dairy.DevProxy", "Dairy.DevProxy\Dairy.DevProxy.csproj", "{7F59ED43-2E0A-46B3-98BD-B49207039FAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dairy.WorkerService", "Dairy.WorkerService\Dairy.WorkerService.csproj", "{7B16E1D1-1B85-479B-B82D-B37ABD147EF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator", "Migrator\Migrator.csproj", "{47556831-B571-4002-8057-0616A8DFDBEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,14 @@ Global
 		{7F59ED43-2E0A-46B3-98BD-B49207039FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F59ED43-2E0A-46B3-98BD-B49207039FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F59ED43-2E0A-46B3-98BD-B49207039FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B16E1D1-1B85-479B-B82D-B37ABD147EF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B16E1D1-1B85-479B-B82D-B37ABD147EF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B16E1D1-1B85-479B-B82D-B37ABD147EF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B16E1D1-1B85-479B-B82D-B37ABD147EF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47556831-B571-4002-8057-0616A8DFDBEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47556831-B571-4002-8057-0616A8DFDBEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47556831-B571-4002-8057-0616A8DFDBEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47556831-B571-4002-8057-0616A8DFDBEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

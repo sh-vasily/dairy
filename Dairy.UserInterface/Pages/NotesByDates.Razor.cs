@@ -3,7 +3,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace Dairy.Pages;
 
-public partial class Notes
+public class NoteDate
+{
+    public DateTime Value { get; set; } = DateTime.Today;
+}
+
+public partial class NotesByDates
 {
     [Inject] NavigationManager NavigationManager { get; set; }
 
@@ -12,6 +17,7 @@ public partial class Notes
     private NoteViewModel[]? notes;
 
     private CreateNoteViewModel note = new ();
+    NoteDate noteDate { get; set; } = new ();
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,5 +43,5 @@ public partial class Notes
         await RefreshNotes();
     }
 
-    private async Task RefreshNotes() => notes = (await _noteService.FindAll()).ToArray();
+    private async Task RefreshNotes() => notes = (await _noteService.FindByDate(noteDate.Value)).ToArray();
 }
