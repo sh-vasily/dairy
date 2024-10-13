@@ -13,7 +13,7 @@ public interface INoteRepository
     Task<IEnumerable<NoteViewModel>> FindAll(DateOnly? dateTime, CancellationToken cancellationToken);
 }
 
-public class NoteRepository : INoteRepository
+public class NoteRepository(DatabaseConfig databaseConfig) : INoteRepository
 {
     private const string UpdateQuery = @"
             update note
@@ -50,16 +50,9 @@ public class NoteRepository : INoteRepository
             where note.id = @id;
             ";
     
-    private readonly DatabaseConfig databaseConfig;
-
     private SQLiteConnection SqLiteConnection => 
         new SQLiteConnection($"Data Source={databaseConfig.Path};Version=3;New=True;Compress=True;")
             .Also(connection => connection.Open());
-
-    public NoteRepository(DatabaseConfig databaseConfig)
-    {
-        this.databaseConfig = databaseConfig;
-    }
 
     //todo: try to use merge here
     public async Task Update(NoteViewModel noteViewModel, CancellationToken cancellationToken)
@@ -106,6 +99,8 @@ public class NoteRepository : INoteRepository
 
     public async Task<IEnumerable<NoteViewModel>> FindAll(DateOnly? dateTime, CancellationToken cancellationToken)
     {
+        Console.WriteLine(databaseConfig.Path);
+        
         if (dateTime is null)
         {
             return await SqLiteConnection
